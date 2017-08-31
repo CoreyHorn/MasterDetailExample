@@ -5,21 +5,20 @@ import com.example.masterdetailexample.detail.models.DetailAction
 import com.example.masterdetailexample.detail.models.DetailResult
 import com.example.masterdetailexample.merge
 import com.example.masterdetailexample.room.Item
-import com.example.masterdetailexample.room.ItemRepo
+import com.example.masterdetailexample.room.ItemDao
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 import io.reactivex.schedulers.Schedulers
 
-class DetailInteractor(actions: Observable<DetailAction>, val itemRepo: ItemRepo) : Interactor<DetailResult>() {
+class DetailInteractor(actions: Observable<DetailAction>, private val itemDao: ItemDao) : Interactor<DetailResult>() {
 
     init {
         actions.observeOn(Schedulers.io())
                 .compose(ActionToResult())
                 .subscribe { results.onNext(it) }
 
-        itemRepo.itemDao()
-                .getSelectedItem()
+        itemDao.getSelectedItem()
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .distinctUntilChanged()
@@ -33,11 +32,11 @@ class DetailInteractor(actions: Observable<DetailAction>, val itemRepo: ItemRepo
                 merge<DetailResult>(
                         source.ofType(DetailAction.EditItem::class.java).map { DetailResult.BeginEditing() },
                         source.ofType(DetailAction.DeleteItem::class.java).map {
-                            itemRepo.itemDao().deleteItem(it.id.toLong())
+                            itemDao.deleteItem(it.id.toLong())
                             DetailResult.ChangeInProgress()
                         },
                         source.ofType(DetailAction.SaveItem::class.java).map {
-                            itemRepo.itemDao().updateItem(Item(it.id.toLong(), it.text, true))
+                            itemDao.updateItem(Item(it.id.toLong(), it.text, true))
                             DetailResult.ChangeInProgress()
                         }
                 )

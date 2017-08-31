@@ -29,6 +29,7 @@ class ItemAdapter(var items: List<Item>): RecyclerView.Adapter<RecyclerView.View
         this.items = items
         notifyDataSetChanged()
     }
+
     override fun getItemCount(): Int {
         return items.size
     }
@@ -48,8 +49,8 @@ class ItemAdapter(var items: List<Item>): RecyclerView.Adapter<RecyclerView.View
 
     private inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        private var selectedColor: Int = -1
-        private var backgroundColor: Int = -1
+        private val selectedColor = ContextCompat.getColor(itemView.context, R.color.colorAccent)
+        private val backgroundColor = ContextCompat.getColor(itemView.context, R.color.itemBackground)
 
         init {
             itemView.clicks()
@@ -58,9 +59,6 @@ class ItemAdapter(var items: List<Item>): RecyclerView.Adapter<RecyclerView.View
             itemView.deleteButton
                     .clicks()
                     .subscribe { deletes.onNext(items[adapterPosition]) }
-
-            selectedColor = ContextCompat.getColor(itemView.context, R.color.colorAccent)
-            backgroundColor = ContextCompat.getColor(itemView.context, R.color.itemBackground)
         }
 
         fun bind(item: Item) {

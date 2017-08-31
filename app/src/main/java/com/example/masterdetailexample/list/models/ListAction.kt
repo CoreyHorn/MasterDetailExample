@@ -8,6 +8,6 @@ sealed class ListAction : Action() {
     data class Create(val text: String, val listState: Parcelable) : ListAction()
     data class Delete(val item: Item, val listState: Parcelable) : ListAction()
     data class Select(val item: Item, val listState: Parcelable) : ListAction()
-    class ClearedInput(val listState: Parcelable): ListAction()
+    data class ClearedInput(val listState: Parcelable): ListAction()
     data class UpdateListState(val state: Parcelable): ListAction()
 }

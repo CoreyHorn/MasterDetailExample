@@ -4,6 +4,6 @@ import com.example.masterdetailexample.basemodels.Action
 
 sealed class DetailAction: Action() {
     data class DeleteItem(val id: String): DetailAction()
-    class EditItem: DetailAction()
-    class SaveItem(val id: String, val text: String): DetailAction()
+    object EditItem: DetailAction()
+    data class SaveItem(val id: String, val text: String): DetailAction()
 }

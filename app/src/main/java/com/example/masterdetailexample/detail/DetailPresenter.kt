@@ -7,15 +7,15 @@ import com.example.masterdetailexample.detail.models.DetailEvent
 import com.example.masterdetailexample.detail.models.DetailResult
 import com.example.masterdetailexample.detail.models.DetailState
 import com.example.masterdetailexample.merge
-import com.example.masterdetailexample.room.ItemRepo
+import com.example.masterdetailexample.room.ItemDao
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 
-class DetailPresenter(itemRepo: ItemRepo) : Presenter<DetailEvent, DetailResult, DetailAction, DetailState>() {
+class DetailPresenter(itemDao: ItemDao) : Presenter<DetailEvent, DetailResult, DetailAction, DetailState>() {
 
     init {
-        attachResultStream(DetailInteractor(actions, itemRepo).results())
+        attachResultStream(DetailInteractor(actions, itemDao).results())
     }
 
     override fun attachEventStream(events: Observable<DetailEvent>) {
@@ -35,7 +35,7 @@ class DetailPresenter(itemRepo: ItemRepo) : Presenter<DetailEvent, DetailResult,
             return upstream.publish { source ->
                 merge<DetailAction>(
                         source.ofType(DetailEvent.DeleteItem::class.java).map { DetailAction.DeleteItem(it.id) },
-                        source.ofType(DetailEvent.EditItem::class.java).map { DetailAction.EditItem() },
+                        source.ofType(DetailEvent.EditItem::class.java).map { DetailAction.EditItem },
                         source.ofType(DetailEvent.SaveItem::class.java).map { DetailAction.SaveItem(it.id, it.text) }
                 )
             }

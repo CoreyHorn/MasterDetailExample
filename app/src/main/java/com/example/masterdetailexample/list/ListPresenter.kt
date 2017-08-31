@@ -7,15 +7,15 @@ import com.example.masterdetailexample.list.models.ListEvent
 import com.example.masterdetailexample.list.models.ListResult
 import com.example.masterdetailexample.list.models.ListState
 import com.example.masterdetailexample.merge
-import com.example.masterdetailexample.room.ItemRepo
+import com.example.masterdetailexample.room.ItemDao
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 
-class ListPresenter(itemRepo: ItemRepo) : Presenter<ListEvent, ListResult, ListAction, ListState>() {
+class ListPresenter(itemDao: ItemDao) : Presenter<ListEvent, ListResult, ListAction, ListState>() {
 
     init {
-        attachResultStream(ListInteractor(actions, itemRepo).results())
+        attachResultStream(ListInteractor(actions, itemDao).results())
     }
 
     override fun attachEventStream(events: Observable<ListEvent>) {

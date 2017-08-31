@@ -30,7 +30,7 @@ class DetailFragment : PresenterFragment<DetailPresenter, DetailEvent, DetailRes
     override fun presenterFactory(): PresenterFactory<DetailPresenter> {
         return object: PresenterFactory<DetailPresenter>() {
             override fun create(): DetailPresenter {
-                return DetailPresenter(App.itemRepo)
+                return DetailPresenter(App.itemRepo.itemDao())
             }
         }
     }
@@ -38,7 +38,7 @@ class DetailFragment : PresenterFragment<DetailPresenter, DetailEvent, DetailRes
     override fun setupViewBindings() {
         btnEditItem
                 .clicks()
-                .map { DetailEvent.EditItem() }
+                .map { DetailEvent.EditItem }
                 .subscribe { events.onNext(it) }
                 .addTo(disposables)
 

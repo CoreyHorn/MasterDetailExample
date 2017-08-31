@@ -1,7 +1,5 @@
 package com.example.masterdetailexample.basearchitecture
 
-import android.support.annotation.CallSuper
-import android.util.Log
 import com.example.masterdetailexample.basemodels.Action
 import com.example.masterdetailexample.basemodels.Event
 import com.example.masterdetailexample.basemodels.Result
@@ -21,18 +19,13 @@ abstract class Presenter<E: Event, R: Result, A: Action, S: State> {
 
     fun actions(): Observable<A> {
         return actions
-                .doOnNext { Log.d("Debug Streams - " + javaClass.canonicalName.split(".").last(),
-                        "Action: " + it) }
     }
 
     fun states(): Observable<out S> {
         return states
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { Log.d("Debug Streams - " + javaClass.canonicalName.split(".").last(),
-                        "State: " + it) }
     }
 
-    @CallSuper
     open fun attachEventStream(events: Observable<E>) {
         eventDisposables.clear()
         eventDisposables = CompositeDisposable()
