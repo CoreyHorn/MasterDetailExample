@@ -45,7 +45,7 @@ class ListFragment : PresenterFragment<ListPresenter, ListEvent, ListResult, Lis
     override fun presenterFactory(): PresenterFactory<ListPresenter> {
         return object: PresenterFactory<ListPresenter>() {
             override fun create(): ListPresenter {
-                return ListPresenter(App.itemRepo)
+                return ListPresenter(App.itemRepo.itemDao())
             }
         }
     }

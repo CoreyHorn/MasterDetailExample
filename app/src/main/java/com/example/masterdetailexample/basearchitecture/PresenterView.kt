@@ -38,7 +38,7 @@ interface PresenterView<P: Presenter<E, R, A, S>, E: Event, R: Result, A: Action
 
     fun initializePresenter(loaderManager: LoaderManager) {
         @Suppress("UNCHECKED_CAST")
-        val loader = loaderManager.getLoader<P>(loaderId()) as PresenterLoader<E, R, A, S, P>?
+        val loader = loaderManager.getLoader<P>(loaderId()) as? PresenterLoader<E, R, A, S, P>
 
         if (loader == null) {
             initializeLoader(loaderCallbacks)

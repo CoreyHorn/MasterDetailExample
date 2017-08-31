@@ -6,21 +6,20 @@ import com.example.masterdetailexample.list.models.ListAction
 import com.example.masterdetailexample.list.models.ListResult
 import com.example.masterdetailexample.merge
 import com.example.masterdetailexample.room.Item
-import com.example.masterdetailexample.room.ItemRepo
+import com.example.masterdetailexample.room.ItemDao
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.ObservableTransformer
 import io.reactivex.schedulers.Schedulers
 
-class ListInteractor(actions: Observable<ListAction>, val itemRepo: ItemRepo): Interactor<ListResult>() {
+class ListInteractor(actions: Observable<ListAction>, private val itemDao: ItemDao): Interactor<ListResult>() {
 
     init {
         actions.observeOn(Schedulers.io())
                 .compose(ActionToResult())
                 .subscribe { results.onNext(it) }
 
-        itemRepo.itemDao()
-                .getItems()
+        itemDao.getItems()
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .compose(ItemsToResult())
@@ -33,16 +32,16 @@ class ListInteractor(actions: Observable<ListAction>, val itemRepo: ItemRepo): I
             return upstream.publish { source ->
                 merge<ListResult>(
                         source.ofType(ListAction.Create::class.java).map {
-                            itemRepo.itemDao().insertItem(Item(text = it.text))
+                            itemDao.insertItem(Item(text = it.text))
                             ListResult.RequestInProgress(it.listState)
                         },
                         source.ofType(ListAction.Delete::class.java).map {
-                            itemRepo.itemDao().deleteItem(it.item)
+                            itemDao.deleteItem(it.item)
                             ListResult.RequestInProgress(it.listState)
                         },
                         source.ofType(ListAction.Select::class.java).map {
-                            itemRepo.itemDao().deselectItem()
-                            itemRepo.itemDao().selectItem(it.item.id)
+                            itemDao.deselectItem()
+                            itemDao.selectItem(it.item.id)
                             ContainerScene.pushSelection()
                             ListResult.Selected(it.listState)
                         },

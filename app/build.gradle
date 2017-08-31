@@ -55,4 +55,6 @@ dependencies {
 
     compile "com.android.support:animated-vector-drawable:${lib.support}"
     compile "com.android.support:design:${lib.support}"
+
+    testCompile "org.mockito:mockito-core:2.9.0"
 }
